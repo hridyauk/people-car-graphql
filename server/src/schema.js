@@ -1,4 +1,5 @@
 import find from "lodash.find";
+import remove from "lodash.remove";
 
 const people = [
   {
@@ -119,6 +120,8 @@ const typeDefs = `
 
     type Mutation {
       addPerson(id: String!, firstName: String!, lastName: String!): Person
+      updatePerson(id: String!, firstName: String!, lastName: String!): Person
+      removePerson(id: String!): Person
     }
 `;
 
@@ -148,6 +151,36 @@ const resolvers = {
 
       people.push(newPerson);
       return newPerson;
+    },
+
+    updatePerson: (root, args) => {
+      const person = find(people, { id: args.id });
+
+      if (!person) {
+        throw new Error(`Couldn\'t find person with id ${args.id}`);
+      }
+
+      person.firstName = args.firstName;
+      person.lastName = args.lastName;
+
+      return person;
+    },
+
+    removePerson: (root, args) => {
+      const removePerson = find(people, { id: args.id });
+      if (!removePerson) {
+        throw new Error(`Couldn\'t find person with id ${args.id}`);
+      }
+
+      remove(people, (person) => {
+        return person.id === removePerson.id;
+      });
+
+      // remove(cars, (car) => {
+      //   return car.personId === removePerson.id;
+      // });
+
+      return removePerson;
     },
   },
 };
