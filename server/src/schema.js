@@ -115,7 +115,11 @@ const typeDefs = `
       people: [Person]
       car(id: String!): Car
       cars: [Car]
-    } 
+    }
+
+    type Mutation {
+      addPerson(id: String!, firstName: String!, lastName: String!): Person
+    }
 `;
 
 const resolvers = {
@@ -132,6 +136,18 @@ const resolvers = {
   Person: {
     carsOwned: (person) => {
       return cars.filter((car) => car.personId === person.id);
+    },
+  },
+  Mutation: {
+    addPerson: (root, args) => {
+      const newPerson = {
+        id: args.id,
+        firstName: args.firstName,
+        lastName: args.lastName,
+      };
+
+      people.push(newPerson);
+      return newPerson;
     },
   },
 };
