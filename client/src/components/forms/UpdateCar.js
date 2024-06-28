@@ -31,7 +31,7 @@ const UpdateCar = ({ carsOwned, onCancel, listOfPeople }) => {
       update: (cache, { data: { updateCar } }) => {
         const peopleBeforeEdit = cache.readQuery({ query: GET_PEOPLE });
 
-        console.log("before edit: ", peopleBeforeEdit);
+        // console.log("before edit: ", peopleBeforeEdit);
 
         // person id not changed
         const onlyCarDetailChanged = peopleBeforeEdit?.people.map((person) => {
@@ -49,10 +49,10 @@ const UpdateCar = ({ carsOwned, onCancel, listOfPeople }) => {
           }
         });
 
-        console.log(
-          "2.only car detail changed person not changed ",
-          onlyCarDetailChanged
-        );
+        // console.log(
+        //   "2.only car detail changed person not changed ",
+        //   onlyCarDetailChanged
+        // );
 
         // person id changed
         const personCarRemoved = peopleBeforeEdit?.people.map((person) => {
@@ -68,7 +68,7 @@ const UpdateCar = ({ carsOwned, onCancel, listOfPeople }) => {
           }
         });
 
-        console.log("older person id", personCarRemoved);
+        // console.log("older person id", personCarRemoved);
 
         const personCarAdded = personCarRemoved?.map((person) => {
           if (person.id === updateCar.personId) {
@@ -78,7 +78,7 @@ const UpdateCar = ({ carsOwned, onCancel, listOfPeople }) => {
           }
         });
 
-        console.log("new person id", personCarAdded);
+        // console.log("new person id", personCarAdded);
 
         const finalPeopleList =
           carsOwned.personId === updateCar.personId
