@@ -6,7 +6,7 @@ import { ADD_CAR, GET_PEOPLE } from "../../graphql/queries";
 import FormTitle from "../layout/FormTitle";
 
 const AddCar = ({ listOfPeople }) => {
-  const [id] = useState(uuidv4());
+  const [id, setId] = useState(uuidv4());
   const [form] = Form.useForm();
   const [, forceUpdate] = useState();
 
@@ -18,18 +18,20 @@ const AddCar = ({ listOfPeople }) => {
 
   const onFinish = (values) => {
     const { year, make, model, price, personId } = values;
-
+    // console.log("add car details: ", year, make, model, price, personId);
+    setId(uuidv4());
     addCar({
       variables: {
         id,
-        year,
+        year: parseInt(year),
         make,
         model,
-        price,
+        price: parseFloat(price),
         personId,
       },
       update: (cache, { data: { addCar } }) => {
         const data = cache.readQuery({ query: GET_PEOPLE });
+
         cache.writeQuery({
           query: GET_PEOPLE,
           data: { ...data, people: [...data.people, addCar] },
@@ -87,7 +89,7 @@ const AddCar = ({ listOfPeople }) => {
           />
         </Form.Item>
 
-        <Form.Item label="Person">
+        <Form.Item name="personId" label="Person">
           <Select placeholder="Select a person">
             {listOfPeople ? (
               listOfPeople.people.map((person) => (

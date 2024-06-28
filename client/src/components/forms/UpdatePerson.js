@@ -1,16 +1,14 @@
-import { useMutation } from "@apollo/client";
-import { Button, Form, Input } from "antd";
+import { Button, Card, Form, Input } from "antd";
+import { UPDATE_PERSON } from "../../graphql/queries";
 import { useEffect, useState } from "react";
-import { v4 as uuidv4 } from "uuid";
-import { ADD_PERSON, GET_PEOPLE } from "../../graphql/queries";
-import FormTitle from "../layout/FormTitle";
+import { useMutation } from "@apollo/client";
 
-const AddPerson = () => {
-  const [id, setId] = useState(uuidv4());
+const UpdatePerson = (props) => {
+  const { id, firstName, lastName, onCancel, carList } = props;
   const [form] = Form.useForm();
-  const [, forceUpdate] = useState();
 
-  const [addPerson] = useMutation(ADD_PERSON);
+  const [, forceUpdate] = useState();
+  const [updatePerson] = useMutation(UPDATE_PERSON);
 
   useEffect(() => {
     forceUpdate();
@@ -18,35 +16,32 @@ const AddPerson = () => {
 
   const onFinish = (values) => {
     const { firstName, lastName } = values;
-    setId(uuidv4());
 
-    addPerson({
+    updatePerson({
       variables: {
         id,
         firstName,
         lastName,
       },
-      update: (cache, { data: { addPerson } }) => {
-        const data = cache.readQuery({ query: GET_PEOPLE });
-        cache.writeQuery({
-          query: GET_PEOPLE,
-          data: { ...data, people: [...data.people, addPerson] },
-        });
-      },
     });
+
+    onCancel();
   };
 
   return (
-    <>
-      <FormTitle formTitle="Add Person" />
-
+    <Card
+      title={`${firstName} ${lastName}`}
+      style={{ margin: "1rem 0" }}
+      //   actions={[<EditOutlined key="edit" onClick={onCancel} />]}
+    >
       <Form
-        name="add-person-form"
+        name="update-person-form"
         layout="inline"
         size="default"
         form={form}
         onFinish={onFinish}
-        style={{ margin: "2rem 0" }}
+        style={{ margin: "1rem 0" }}
+        initialValues={{ firstName, lastName }}
       >
         <Form.Item
           name="firstName"
@@ -70,18 +65,22 @@ const AddPerson = () => {
               type="primary"
               htmlType="submit"
               disabled={
-                !form.isFieldsTouched(true) ||
+                (!form.isFieldsTouched("firstName") &&
+                  !form.isFieldsTouched("lastName")) ||
                 form.getFieldsError().filter(({ errors }) => errors.length)
                   .length
               }
             >
-              Add Person
+              Update Person
             </Button>
           )}
         </Form.Item>
+
+        <Button onClick={onCancel}>Cancel</Button>
       </Form>
-    </>
+      <>{carList}</>
+    </Card>
   );
 };
 
-export default AddPerson;
+export default UpdatePerson;

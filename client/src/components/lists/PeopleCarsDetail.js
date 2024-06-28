@@ -9,7 +9,7 @@ const PeopleCarsDetail = () => {
   if (loading) return "loading...";
   if (error) return `Error: ${error.message}`;
 
-  console.log("data: ", data);
+  //   console.log("data: ", data);
 
   return (
     <div style={{ width: "100%" }}>
