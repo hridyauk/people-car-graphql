@@ -13,6 +13,16 @@ const CarCard = (props) => {
     setEditmode(!editMode);
   };
 
+  const formatPriceCurrency = (price) => {
+    const currency = new Intl.NumberFormat("en-US", {
+      style: "currency",
+      currency: "USD",
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 2,
+    });
+    return currency.format(price);
+  };
+
   return (
     <>
       {editMode ? (
@@ -24,7 +34,7 @@ const CarCard = (props) => {
       ) : (
         <Card
           type="inner"
-          title={`${year} ${make} ${model} -> $ ${price}`}
+          title={`${year} ${make} ${model} -> ${formatPriceCurrency(price)}`}
           style={{ margin: "1rem 0" }}
           actions={[
             <EditOutlined key="edit" onClick={handleEditButton} />,

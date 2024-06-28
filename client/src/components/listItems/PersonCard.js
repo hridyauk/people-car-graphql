@@ -4,6 +4,7 @@ import { EditOutlined } from "@ant-design/icons";
 import { useState } from "react";
 import UpdatePerson from "../forms/UpdatePerson";
 import RemovePerson from "../buttons/RemovePerson";
+import { Link } from "react-router-dom";
 
 const PersonCard = (props) => {
   const { id, firstName, lastName, carsOwned, listOfPeople } = props;
@@ -53,6 +54,7 @@ const PersonCard = (props) => {
           ]}
         >
           {carList}
+          <Link to={`/people/${id}`}>Learn More</Link>
         </Card>
       )}
     </>

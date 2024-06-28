@@ -40,7 +40,7 @@ const AddCar = ({ listOfPeople }) => {
     });
   };
 
-  return (
+  return listOfPeople?.people.length > 0 ? (
     <>
       <FormTitle formTitle="Add Car" />
 
@@ -120,6 +120,8 @@ const AddCar = ({ listOfPeople }) => {
         </Form.Item>
       </Form>
     </>
+  ) : (
+    <></>
   );
 };
 
