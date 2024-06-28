@@ -57,7 +57,9 @@ const ShowDetailPage = () => {
             </Card>
           ))
         ) : (
-          <></>
+          <div style={styles.cardTitle}>
+            <p style={styles.pStyle}>No cars available</p>
+          </div>
         )}
       </Card>
       <Link to={"/"} style={styles.linkStyle}>

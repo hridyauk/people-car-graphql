@@ -65,8 +65,6 @@ const UpdatePerson = (props) => {
               type="primary"
               htmlType="submit"
               disabled={
-                (!form.isFieldsTouched("firstName") &&
-                  !form.isFieldsTouched("lastName")) ||
                 form.getFieldsError().filter(({ errors }) => errors.length)
                   .length
               }
