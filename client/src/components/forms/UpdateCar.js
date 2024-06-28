@@ -27,46 +27,69 @@ const UpdateCar = ({ carsOwned, onCancel, listOfPeople }) => {
         price: parseFloat(price),
         personId,
       },
-      // update: (cache, { data: { updateCar } }) => {
-      //   const noUpdatePeople = cache.readQuery({ query: GET_PEOPLE });
 
-      // console.log("no updatePeople: ", noUpdatePeople);
+      update: (cache, { data: { updateCar } }) => {
+        const peopleBeforeEdit = cache.readQuery({ query: GET_PEOPLE });
 
-      // person updated
-      // const personCarRemoved = noUpdatePeople.map((p) =>
-      //   p.id === carsOwned.personId
-      //     ? {
-      //         ...p,
-      //         carsOwned: p.carsOwned.filter((c) => c.id !== updateCar.id),
-      //       }
-      //     : p
-      // );
+        console.log("before edit: ", peopleBeforeEdit);
 
-      // const newPersonCarUpdated = personCarRemoved.map((p) =>
-      //   p.id === carsOwned.personId
-      //     ? { ...p, carsOwned: [...p.carsOwned, updateCar] }
-      //     : p
-      // );
+        // person id not changed
+        const onlyCarDetailChanged = peopleBeforeEdit?.people.map((person) => {
+          if (person.id === updateCar.personId) {
+            return {
+              ...person,
+              carsOwned: person.carsOwned.map((car) => {
+                if (car.id === updateCar.id) {
+                  return UpdateCar;
+                } else return car;
+              }),
+            };
+          } else {
+            return person;
+          }
+        });
 
-      // const finalPeopleCar =
-      //   updateCar.personId === carsOwned.personId
-      //     ? noUpdatePeople.map((p) =>
-      //         p.id === updateCar.personId
-      //           ? {
-      //               ...p,
-      //               carsOwned: p.carsOwned.map((c) =>
-      //                 c.id === updateCar.id ? updateCar : c
-      //               ),
-      //             }
-      //           : p
-      //       )
-      //     : newPersonCarUpdated;
+        console.log(
+          "2.only car detail changed person not changed ",
+          onlyCarDetailChanged
+        );
 
-      // cache.writeQuery({
-      //   query: GET_PEOPLE,
-      //   data: noUpdatePeople,
-      // });
-      // },
+        // person id changed
+        const personCarRemoved = peopleBeforeEdit?.people.map((person) => {
+          if (person.id === carsOwned.personId) {
+            return {
+              ...person,
+              carsOwned: person.carsOwned.filter(
+                (car) => car.id !== updateCar.id
+              ),
+            };
+          } else {
+            return person;
+          }
+        });
+
+        console.log("older person id", personCarRemoved);
+
+        const personCarAdded = personCarRemoved?.map((person) => {
+          if (person.id === updateCar.personId) {
+            return { ...person, carsOwned: [...person.carsOwned, updateCar] };
+          } else {
+            return person;
+          }
+        });
+
+        console.log("new person id", personCarAdded);
+
+        const finalPeopleList =
+          carsOwned.personId === updateCar.personId
+            ? onlyCarDetailChanged
+            : personCarAdded;
+
+        cache.writeQuery({
+          query: GET_PEOPLE,
+          data: { people: finalPeopleList },
+        });
+      },
     });
 
     onCancel();
